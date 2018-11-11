@@ -5,6 +5,7 @@ import com.castrodev.shufflesongs.data.network.MusicsApi
 import com.castrodev.shufflesongs.data.network.fetchMusics
 import com.castrodev.shufflesongs.data.network.response.Song
 import com.castrodev.shufflesongs.ui.SongsUiModel
+import com.castrodev.shufflesongs.utilities.shouldBeShuffled
 
 class SongsRepository(private val api: MusicsApi) : SongsRepositoryContract {
 
@@ -29,12 +30,8 @@ class SongsRepository(private val api: MusicsApi) : SongsRepositoryContract {
 
     override fun shuffle(viewState: MutableLiveData<SongsUiModel>) {
         songsList.shuffle()
-        if (!isShuffleCorrect()) shuffle(viewState)
+        if (songsList.shouldBeShuffled()) shuffle(viewState)
 
         viewState.postValue(SongsUiModel.ListUpdated(songsList))
     }
-
-    private fun isShuffleCorrect() =
-        (0 until songsList.size - 1).none { songsList[it].artistName == songsList[it + 1].artistName }
-
 }

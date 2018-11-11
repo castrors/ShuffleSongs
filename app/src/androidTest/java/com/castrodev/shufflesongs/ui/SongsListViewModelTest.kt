@@ -3,7 +3,6 @@ package com.castrodev.shufflesongs.ui
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Observer
 import com.castrodev.shufflesongs.data.SongsRepositoryContract
-import com.castrodev.shufflesongs.data.network.response.Song
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import org.junit.Before
@@ -55,23 +54,4 @@ class SongsListViewModelTest {
         viewModel.viewState.postValue(songsUiModel)
     }
 
-    private fun generateSongsList(amount: Int, wrapperType: String = "music") = (1..amount).map {index ->
-        Song(
-            index,
-            "Artist Name $index",
-            "Artist Type",
-            "artworkUrl",
-            index,
-            "Collection Name",
-            "Country",
-            index,
-            "Primary Genre Name",
-            "01/01/2018",
-            "Censored Name",
-            "Track Explicitness",
-            "Track Name",
-            index,
-            wrapperType
-        )
-    }
 }
