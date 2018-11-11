@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.Toast
 import com.castrodev.shufflesongs.R
 import com.castrodev.shufflesongs.utilities.Injection
 
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         loading = findViewById(R.id.loading)
         viewModel = ViewModelProviders.of(this, Injection.provideViewModelFactory())
             .get(SongsListViewModel::class.java)
-
+        viewModel.initialize()
         initAdapter()
     }
 
@@ -36,10 +37,21 @@ class MainActivity : AppCompatActivity() {
         showLoading()
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
-        viewModel.songs.data.observe(this, Observer {
+        viewModel.viewState.observe(this, Observer {
             hideLoading()
-            it?.let { songs -> adapter.dataSet = songs}
+            it?.let { render(it) }
         })
+    }
+
+    private fun render(uiModel: SongsUiModel) {
+        when (uiModel) {
+            is SongsUiModel.ListUpdated -> {
+                adapter.dataSet = uiModel.songs
+            }
+            is SongsUiModel.ErrorOccurred -> {
+                Toast.makeText(this, uiModel.error, Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun hideLoading() {
