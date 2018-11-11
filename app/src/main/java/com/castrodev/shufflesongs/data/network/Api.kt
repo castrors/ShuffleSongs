@@ -15,25 +15,34 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-private const val TAG = "MusicsApi"
-
 fun fetchMusics(
     api: MusicsApi,
     onSuccess: (songs: List<Song>) -> Unit,
     onError: (error: String) -> Unit
 ) {
 
+
     GlobalScope.launch(Dispatchers.Default) {
+        val errors = mutableSetOf<String>()
+        val songs = mutableListOf<Song>()
+
         listOf("909253", "1171421960", "358714030", "1419227", "264111789").forEach { authorId ->
             val request = api.fetchMusics(authorId)
             val response = request.await()
             if (response.isSuccessful) {
-                onSuccess(response.body()?.results ?: emptyList())
+                songs.addAll(response.body()?.results ?: emptyList())
             } else {
-                onError(response.errorBody()?.string() ?: "Unknown error")
+                errors.add(response.errorBody()?.string() ?: "Unknown error")
             }
         }
+
+        when {
+            errors.isEmpty() -> onSuccess(songs)
+            else -> onError(errors.joinToString(", "))
+        }
     }
+
+
 }
 
 interface MusicsApi {
