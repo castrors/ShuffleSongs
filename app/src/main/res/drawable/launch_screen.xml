@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:opacity="opaque">
+
+    <item>
+        <shape>
+            <gradient
+                android:angle="315"
+                android:centerColor="@color/colorPrimaryDark"
+                android:centerX="50%"
+                android:endColor="@color/colorPrimary"
+                android:startColor="@color/colorPrimaryDark" />
+        </shape>
+
+    </item>
+
+    <item android:right="230dp">
+        <bitmap
+            android:gravity="center"
+            android:src="@mipmap/logo" />
+    </item>
+
+    <item android:left="70dp" >
+        <bitmap
+            android:gravity="center"
+            android:src="@mipmap/shufflesongs" />
+
+    </item>
+
+</layer-list>
