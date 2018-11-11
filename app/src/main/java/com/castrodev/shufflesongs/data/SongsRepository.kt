@@ -8,6 +8,7 @@ import com.castrodev.shufflesongs.data.network.response.SongsResult
 
 class SongsRepository(private val api: MusicsApi) : SongsRepositoryContract {
 
+    private var songsList = mutableListOf<Song>()
     private var isRequestInProgress = false
     private val dataResult = MutableLiveData<List<Song>>()
     private val networkErrors = MutableLiveData<String>()
@@ -17,12 +18,18 @@ class SongsRepository(private val api: MusicsApi) : SongsRepositoryContract {
         return SongsResult(dataResult, networkErrors)
     }
 
+    override fun shuffle() {
+        songsList.shuffle()
+        dataResult.postValue(songsList)
+    }
+
     private fun requestData() {
         if (isRequestInProgress) return
 
         isRequestInProgress = true
         fetchMusics(api,
             { musics ->
+                songsList.addAll(musics)
                 dataResult.postValue(musics)
                 isRequestInProgress = false
             },

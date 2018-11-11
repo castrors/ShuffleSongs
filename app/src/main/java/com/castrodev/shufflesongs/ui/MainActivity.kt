@@ -6,16 +6,16 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.Menu
+import android.view.MenuItem
 import com.castrodev.shufflesongs.R
-import com.castrodev.shufflesongs.data.network.response.Song
 import com.castrodev.shufflesongs.utilities.Injection
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: SongsListViewModel
     private lateinit var recyclerView: RecyclerView
-    private var adapter = SongsAdapter()
-    private var songsList = mutableListOf<Song>()
+    private var adapter = SongsAdapter(emptyList())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,10 +33,23 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         viewModel.songs.data.observe(this, Observer {
             it?.let { songs ->
-                songsList.addAll(songs.filter { song -> song.wrapperType == "track" })
-                adapter.submitList(songsList)
+                adapter.dataSet = songs.filter { song -> song.wrapperType == "track" }
             }
-
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_shuffle -> {
+                viewModel.shuffle()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

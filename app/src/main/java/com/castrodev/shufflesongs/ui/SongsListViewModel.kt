@@ -5,6 +5,8 @@ import com.castrodev.shufflesongs.data.SongsRepositoryContract
 import com.castrodev.shufflesongs.data.network.response.SongsResult
 
 
-class SongsListViewModel(repository: SongsRepositoryContract) : ViewModel() {
+class SongsListViewModel(private val repository: SongsRepositoryContract) : ViewModel() {
     val songs: SongsResult = repository.getMusics()
+
+    fun shuffle() = repository.shuffle()
 }
