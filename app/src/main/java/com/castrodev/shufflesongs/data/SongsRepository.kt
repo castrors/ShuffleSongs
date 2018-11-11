@@ -20,7 +20,18 @@ class SongsRepository(private val api: MusicsApi) : SongsRepositoryContract {
 
     override fun shuffle() {
         songsList.shuffle()
+        if (!isShuffleCorrect()) shuffle()
+
         dataResult.postValue(songsList)
+    }
+
+    private fun isShuffleCorrect(): Boolean {
+        for (index in 0 until songsList.size - 1) {
+            if (songsList[index].artistName == songsList[index + 1].artistName) {
+                return false
+            }
+        }
+        return true
     }
 
     private fun requestData() {
@@ -29,8 +40,8 @@ class SongsRepository(private val api: MusicsApi) : SongsRepositoryContract {
         isRequestInProgress = true
         fetchMusics(api,
             { musics ->
-                songsList.addAll(musics)
-                dataResult.postValue(musics)
+                songsList.addAll(musics.filter { it.wrapperType == "track" })
+                dataResult.postValue(songsList)
                 isRequestInProgress = false
             },
             { error ->
