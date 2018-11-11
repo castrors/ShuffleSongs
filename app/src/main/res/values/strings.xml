@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Shuffle Songs</string>
+    <string name="artwork_content_description">Artwork</string>
+    <string name="unknown">Unknown</string>
 </resources>
