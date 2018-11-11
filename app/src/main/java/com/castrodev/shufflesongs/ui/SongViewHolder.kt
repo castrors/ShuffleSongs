@@ -20,8 +20,6 @@ class SongViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val artistName: TextView = view.findViewById(R.id.artist_name)
     private val artwork: ImageView = view.findViewById(R.id.artwork)
 
-    private var song: Song? = null
-
 
     fun bind(song: Song?) = when (song) {
         null -> {
@@ -35,7 +33,6 @@ class SongViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
 
     private fun showSongData(song: Song) {
-        this.song = song
         trackName.text = song.trackName
         artistName.text = formatTrackName(song)
         Picasso.get().load(song.artworkUrl).into(artwork, object : Callback {
