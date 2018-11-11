@@ -4,9 +4,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.castrodev.shufflesongs.data.network.response.Song
 
-class SongsAdapter(songsList: List<Song>) : RecyclerView.Adapter<SongViewHolder>() {
+class SongsAdapter : RecyclerView.Adapter<SongViewHolder>() {
 
-    var dataSet: List<Song> = songsList
+    var dataSet: List<Song> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()

@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: SongsListViewModel
     private lateinit var recyclerView: RecyclerView
-    private var adapter = SongsAdapter(emptyList())
+    private var adapter = SongsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,9 +32,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
         viewModel.songs.data.observe(this, Observer {
-            it?.let { songs ->
-                adapter.dataSet = songs.filter { song -> song.wrapperType == "track" }
-            }
+            it?.let { songs -> adapter.dataSet = songs}
         })
     }
 

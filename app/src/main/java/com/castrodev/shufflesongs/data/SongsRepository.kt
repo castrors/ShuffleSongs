@@ -25,14 +25,9 @@ class SongsRepository(private val api: MusicsApi) : SongsRepositoryContract {
         dataResult.postValue(songsList)
     }
 
-    private fun isShuffleCorrect(): Boolean {
-        for (index in 0 until songsList.size - 1) {
-            if (songsList[index].artistName == songsList[index + 1].artistName) {
-                return false
-            }
-        }
-        return true
-    }
+    private fun isShuffleCorrect() =
+        (0 until songsList.size - 1).none { songsList[it].artistName == songsList[it + 1].artistName }
+
 
     private fun requestData() {
         if (isRequestInProgress) return
@@ -49,6 +44,4 @@ class SongsRepository(private val api: MusicsApi) : SongsRepositoryContract {
                 isRequestInProgress = false
             })
     }
-
-
 }

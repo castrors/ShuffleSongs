@@ -26,11 +26,9 @@ class SongViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val resources = itemView.resources
             trackName.text = resources.getString(R.string.unknown)
             artistName.text = resources.getString(R.string.unknown)
-
         }
         else -> showSongData(song)
     }
-
 
     private fun showSongData(song: Song) {
         trackName.text = song.trackName
@@ -43,7 +41,6 @@ class SongViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                 imageDrawable.cornerRadius = Math.max(imageBitmap.width, imageBitmap.height) / 2.0f
                 artwork.setImageDrawable(imageDrawable)
             }
-
             override fun onError(exception: Exception) {
                 artwork.setImageResource(R.drawable.ic_launcher_foreground)
             }
@@ -51,7 +48,6 @@ class SongViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     }
 
     private fun formatTrackName(song: Song) = "${song.artistName} (${song.primaryGenreName})"
-
 
     companion object {
         fun create(parent: ViewGroup): SongViewHolder {
