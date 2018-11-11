@@ -21,28 +21,17 @@ fun fetchMusics(
     onError: (error: String) -> Unit
 ) {
 
-
     GlobalScope.launch(Dispatchers.Default) {
-        val errors = mutableSetOf<String>()
-        val songs = mutableListOf<Song>()
-
         listOf("909253", "1171421960", "358714030", "1419227", "264111789").forEach { authorId ->
             val request = api.fetchMusics(authorId)
             val response = request.await()
             if (response.isSuccessful) {
-                songs.addAll(response.body()?.results ?: emptyList())
+                onSuccess(response.body()?.results ?: emptyList())
             } else {
-                errors.add(response.errorBody()?.string() ?: "Unknown error")
+                onError(response.errorBody()?.string() ?: "Unknown error")
             }
         }
-
-        when {
-            errors.isEmpty() -> onSuccess(songs)
-            else -> onError(errors.joinToString(", "))
-        }
     }
-
-
 }
 
 interface MusicsApi {
