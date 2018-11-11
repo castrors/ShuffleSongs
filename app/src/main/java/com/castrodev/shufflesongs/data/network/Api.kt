@@ -1,12 +1,14 @@
 package com.castrodev.shufflesongs.data.network
 
-import android.util.Log
 import com.castrodev.shufflesongs.data.network.response.Result
 import com.castrodev.shufflesongs.data.network.response.Song
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -18,31 +20,26 @@ private const val TAG = "MusicsApi"
 fun fetchMusics(
     api: MusicsApi,
     onSuccess: (songs: List<Song>) -> Unit,
-    onError: (error: String) -> Unit) {
+    onError: (error: String) -> Unit
+) {
 
-    api.fetchMusics("909253").enqueue(
-        object : Callback<Result> {
-            override fun onFailure(call: Call<Result>?, t: Throwable) {
-                Log.d(TAG, "Fail to get data")
-                onError(t.message ?: "unknown error")
-            }
-
-            override fun onResponse(call: Call<Result>?, response: Response<Result>) {
-                Log.d(TAG, "Got a response $response")
-                when {
-                    response.isSuccessful -> onSuccess(response.body()?.results  ?: emptyList())
-                    else -> onError(response.errorBody()?.string() ?: "Unknown error")
-                }
-
+    GlobalScope.launch(Dispatchers.Default) {
+        listOf("909253", "1171421960", "358714030", "1419227", "264111789").forEach { authorId ->
+            val request = api.fetchMusics(authorId)
+            val response = request.await()
+            if (response.isSuccessful) {
+                onSuccess(response.body()?.results ?: emptyList())
+            } else {
+                onError(response.errorBody()?.string() ?: "Unknown error")
             }
         }
-    )
+    }
 }
 
 interface MusicsApi {
 
     @GET("lookup")
-    fun fetchMusics(@Query("id") id: String): Call<Result>
+    fun fetchMusics(@Query("id") id: String): Deferred<Response<Result>>
 
     companion object {
         private const val BASE_URL = "https://us-central1-tw-exercicio-mobile.cloudfunctions.net"
@@ -59,6 +56,7 @@ interface MusicsApi {
                 .baseUrl(BASE_URL)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .build()
                 .create(MusicsApi::class.java)
         }
